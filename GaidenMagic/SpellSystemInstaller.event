@@ -1,0 +1,75 @@
+#ifndef FreeSpace
+  #define FreeSpace 0xb2a610
+  ORG FreeSpace
+#endif
+
+#ifndef EssentialFixes
+  #include "_FE8EssentialFixes.event"
+#endif
+
+#include "Extensions/Hack Installation.txt"
+
+#ifndef efxHPBarParent
+ALIGN 4
+  #include "HPCost/HPHealingFixes.event"
+#endif
+
+#include "SpellSystem.event"
+
+#ifndef Fire
+  #include "EA Standard Library/FE8 Definitions.txt"
+#endif
+#include "vanilla_spell_lists.event"
+
+//put code for menu option usability here
+
+MagicUMCommand:
+#incbin "MagicUMCommand.dmp"
+POIN Spells_Getter
+MagicUMCommandEffect:
+#incbin "MagicUMCommandEffect.dmp"
+POIN BuildSelectSpellMenu
+MagicUMCommandHover:
+#incbin "MagicUMCommandHover.dmp"
+MagicUMCommandUnhover:
+#incbin "MagicUMCommandUnhover.dmp"
+
+PUSH
+
+ORG $2B3EC
+  jumpToHack(ProcParent)
+
+//here we'll overwrite a useless command like Play with our new commands.
+
+ORG $59CB18
+POIN MagicUMCommand+1
+
+ORG $59CB20
+POIN MagicUMCommandEffect+1
+
+ORG $59CB28
+POIN MagicUMCommandHover+1
+
+ORG $59CB2C
+POIN MagicUMCommandUnhover+1
+
+POP
+
+//Changes to support calculating HP changes during battle:
+ProcParent:
+#incbin "proc_loop.dmp"
+POIN Proc_Start
+POIN MagicCostsHP
+POIN Proc_Finish 0
+
+ALIGN 4
+Proc_Start:
+#incbin "proc_start.dmp"
+
+ALIGN 4
+Proc_Finish:
+#incbin "proc_finish.dmp"
+
+ALIGN 4
+MagicCostsHP:
+#incbin "hpcost.dmp"
